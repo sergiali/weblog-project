@@ -15,5 +15,8 @@
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "mogoose": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
