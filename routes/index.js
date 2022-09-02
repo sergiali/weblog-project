@@ -4,7 +4,9 @@ const router = new Router();
 
 router.get("/",(req,res) => {
     res.render('index',{
-        pageTitle : " simple weblog"});
+        pageTitle: " simple weblog",
+        layout: "./layouts/loginLayout"
+    });
 })
 
 module.exports = router;
