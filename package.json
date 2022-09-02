@@ -4,8 +4,8 @@
   "description": " simple weblog ",
   "main": "app.js",
   "scripts": {
-    "start": "cross-env NODE-ENV = production node app",
-    "dev": "cross-env NODE-ENV = development nodemon app"
+    "start": "cross-env NODE_ENV=production node app",
+    "dev": "cross-env NODE_ENV=development nodemon app"
   },
   "keywords": [],
   "author": "ali babaei",
@@ -14,9 +14,10 @@
     "dotenv": "^16.0.2",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "mogoose": "^0.0.1-security" 
+    "mogoose": "^0.0.1-security",
+    "morgan": "^1.10.0"
   },
-    "devDependencies": {
-      "cross-env": "^7.0.3"
-    }
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
+}
