@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const dotEnv = require('dotenv');
 const morgan = require('morgan');
+const expresslayouts = require('express-ejs-layouts');
 
 const indexRoutes = require('./routes/index');
 const connectDb = require('./config/db');
@@ -18,7 +19,9 @@ if(process.env.NODE_ENV === "development"){
 };
 
 //? View Engine (Ejs)
+app.use(expresslayouts);
 app.set("view engine","ejs");
+app.set("layout","./layouts/mainLayout");
 app.set("views","views");
 
 //* Database Connection
