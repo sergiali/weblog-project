@@ -12,13 +12,6 @@ router.get('/',(req,res) => {
 });
 });
 
-// @Desc   Login Page
-// @Route  GET /dashboard/login
-router.get("/login",(rew,res) => {
-    res.render("login",{
-        pageTitle: " ورورد به بخش مدیریت ",
-        path: "/login",
-    });
-});
+
 
 module.exports = router;
