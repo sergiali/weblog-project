@@ -5,10 +5,20 @@ const router = new Router();
 
 //? Yup
 const schema = Yup.object().shape({
-    fullname: Yup.string().required().min(4).max(255),
-    email: Yup.string().email().required(),
-    password: Yup.string().required().min(4).max(255),
-    confirmPassword: Yup.string().required().oneOf([Yup.ref("password"),null])
+    fullname: Yup.string()
+        .required("نام و نام خانوادگی الزامی میباشد")
+        .min(4," نام و نام خانوادگی نباید کمتر از 4 کاراکتر باشد")
+        .max(255,"نام و نام خانوادگی نباید بیشتر از 255 کاراکتر باشد"),
+    email: Yup.string()
+        .email("ایمیل معتبر نمیباشد")
+        .required("ایمیل الزامی میباشد"),
+    password: Yup.string()
+        .required("کلمه عبور الزامی میباشد")
+        .min(4,"کلمه عبور نباید کمتر از 4 کاراکتر باشد")
+        .max(255,"کلمه عبور نباید بیشتر از 255 کاراکتر باشد"),
+    confirmPassword: Yup.string()
+        .required(" تکرار کلمه عبور الزامی میباشد")
+        .oneOf([Yup.ref("password"),null])
 });
 
 // @Desc   Login Page
@@ -32,20 +42,16 @@ router.get("/register",(req,res) => {
 // @Desc   Register Handle
 // @Route  POST /users/register
 router.post("/register",(req,res) => {
-    // const validator = schema.isValid(req.body);
-    // validator.then((result) => {
-    //     console.log(result);
-    //     res.send("all good");
-    // }).catch((ex) => {
-    //     console.log(ex);
-    //     res.send("error");
-    // });
     schema.validate(req.body).then((result) => {
         console.log(result);
-        res.send("all good");
+        res.redirect("/users/login")
     }).catch((err) => {
-        console.log(err);
-        res.send("error",{errors: err.errors});
+        console.log(err.errors);
+        res.render("register",{
+            pageTitle: "ثبت نام کاربر",
+            path: "/register",
+            errors: err.errors
+        });
     });
 });
 
