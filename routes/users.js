@@ -1,6 +1,15 @@
 const { Router } = require('express');
+const Yup = require('yup');
 
 const router = new Router();
+
+//? Yup
+const schema = Yup.object().shape({
+    fullname: Yup.string().required().min(4).max(255),
+    email: Yup.string().email().required(),
+    password: Yup.string().required().min(4).max(255),
+    confirmPassword: Yup.string().required().oneOf([Yup.ref("password"),null])
+});
 
 // @Desc   Login Page
 // @Route  GET /users/login
@@ -23,8 +32,21 @@ router.get("/register",(req,res) => {
 // @Desc   Register Handle
 // @Route  POST /users/register
 router.post("/register",(req,res) => {
-    console.log(req.body);
-    res.send("weblog");
+    // const validator = schema.isValid(req.body);
+    // validator.then((result) => {
+    //     console.log(result);
+    //     res.send("all good");
+    // }).catch((ex) => {
+    //     console.log(ex);
+    //     res.send("error");
+    // });
+    schema.validate(req.body).then((result) => {
+        console.log(result);
+        res.send("all good");
+    }).catch((err) => {
+        console.log(err);
+        res.send("error",{errors: err.errors});
+    });
 });
 
 module.exports = router;
