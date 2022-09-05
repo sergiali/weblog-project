@@ -1,58 +1,98 @@
-const { Router } = require('express');
-const Yup = require('yup');
+const { Router } = require("express");
+const Validator = require("fastest-validator");
 
 const router = new Router();
+const v = new Validator();
 
-//? Yup
-const schema = Yup.object().shape({
-    fullname: Yup.string()
-        .required("نام و نام خانوادگی الزامی میباشد")
-        .min(4," نام و نام خانوادگی نباید کمتر از 4 کاراکتر باشد")
-        .max(255,"نام و نام خانوادگی نباید بیشتر از 255 کاراکتر باشد"),
-    email: Yup.string()
-        .email("ایمیل معتبر نمیباشد")
-        .required("ایمیل الزامی میباشد"),
-    password: Yup.string()
-        .required("کلمه عبور الزامی میباشد")
-        .min(4,"کلمه عبور نباید کمتر از 4 کاراکتر باشد")
-        .max(255,"کلمه عبور نباید بیشتر از 255 کاراکتر باشد"),
-    confirmPassword: Yup.string()
-        .required(" تکرار کلمه عبور الزامی میباشد")
-        .oneOf([Yup.ref("password"),null])
+const schema = {
+    fullname: {
+        type: "string",
+        trim: true,
+        min: 4,
+        max: 255,
+        optional: false,
+        messages: {
+            required: "نام و نام خانوادگی الزامی می باشد",
+            stringMin: "نام و نام خانوادگی نباید کمتر از 4 کاراکتر باشد",
+            stringMax: "نام و نام خانوادگی نباید بیشتر از 255 کاراکتر باشد",
+        },
+    },
+    email: {
+        type: "email",
+        normalize: true,
+        messages: {
+            emailEmpty: "فیلد ایمیل نباید خالی باشد",
+            required: "ایمیل الزامی می باشد",
+            string: "آدرس ایمیل را بررسی کنید",
+        },
+    },
+    password: {
+        type: "string",
+        min: 4,
+        max: 255,
+        messages: {
+            required: "کلمه عبور الزامی می باشد",
+            string: "کلمه عبور را بررسی کنید",
+            stringMin: "کلمه عبور نباید کمتر از 4 کاراکتر باشد",
+            stringMax: "کلمه عبور نمی تواند بیشتر از 255 کاراکتر باشد",
+        },
+    },
+    confirmPassword: {
+        type: "string",
+        min: 4,
+        max: 255,
+        messages: {
+            required: "تکرار کلمه عبور الزامی می باشد",
+            string: "تکرار کلمه عبور را بررسی کنید",
+            stringMin: "تکرار کلمه عبور نباید کمتر از 4 کاراکتر باشد",
+            stringMax: "تکرار کلمه عبور نباید بیشتر از 255 کاراکتر باشد",
+        },
+    },
+    $$strict: true,
+};
+
+//  @desc   Login Page
+//  @route  GET /users/login
+router.get("/login", (req, res) => {
+    res.render("login", { pageTitle: "ورود به بخش مدیریت", path: "/login" });
 });
 
-// @Desc   Login Page
-// @Route  GET /users/login
-router.get("/login",(req,res) => {
-    res.render("login",{
-        pageTitle: " ورود به بخش مدیریت ",
-        path: "/login",
-    });
-});
-
-// @Desc   Register Page
-// @Route  GET /users/register
-router.get("/register",(req,res) => {
-    res.render("register",{
-        pageTitle: " ثبت نام کاربر جدید",
+//  @desc   Register Page
+//  @route  GET /users/register
+router.get("/register", (req, res) => {
+    res.render("register", {
+        pageTitle: "ثبت نام کاربر جدید",
         path: "/register",
     });
 });
 
-// @Desc   Register Handle
-// @Route  POST /users/register
-router.post("/register",(req,res) => {
-    schema.validate(req.body).then((result) => {
-        console.log(result);
-        res.redirect("/users/login")
-    }).catch((err) => {
-        console.log(err.errors);
-        res.render("register",{
+//  @desc   Register Handle
+//  @route  POST /users/register
+router.post("/register", (req, res) => {
+    const validate = v.validate(req.body, schema);
+    const errorArr = [];
+    if (validate === true) {
+        const { fullname, email, password, confirmPassword } = req.body;
+        console.log(fullname);
+        console.log(req.body);
+        if (password !== confirmPassword) {
+            errorArr.push({ message: "کلمه های عبور یکسان نیستند" });
+
+            return res.render("register", {
+                pageTitle: "ثبت نام کاربر",
+                path: "/register",
+                errors: errorArr,
+            });
+        }
+        res.redirect("/users/login");
+    } else {
+        console.log(validate);
+        res.render("register", {
             pageTitle: "ثبت نام کاربر",
             path: "/register",
-            errors: err.errors
+            errors: validate,
         });
-    });
+    }
 });
 
 module.exports = router;
