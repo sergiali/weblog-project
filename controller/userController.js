@@ -1,5 +1,4 @@
 const bcrypt = require("bcryptjs");
-const expressEjsLayouts = require("express-ejs-layouts");
 const passport = require('passport');
 
 const User = require("../model/user");
@@ -19,6 +18,16 @@ exports.handleLogin = (req,res,next) => {
         failureRedirect: "/users/login",
         failureFlash: true,
     })(req,res,next);
+};
+
+exports.logout = (req,res,next) => {
+    req.logout(function(err) {
+        if (err) {
+            return next(err);
+        }
+    });
+    req.flash("success_msg"," خروج موفقیت آمیز بود ");
+    res.redirect("/users/login");
 };
 
 exports.register =  (req, res) => {
