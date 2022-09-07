@@ -11,7 +11,7 @@ passport.use(new Strategy({usernameField: "email"}, async (email,password,done) 
         if(!user) {
             return done(null,false,{message: " کاربری با این ایمیل ثبت نشده است "});
         }
-        const isMatch = await bcrypt.compare(password,uset.password)
+        const isMatch = await bcrypt.compare(password,user.password)
         if(isMatch){
             return done(null,user); //req.user
         } else {
