@@ -15,5 +15,5 @@ exports.schema = Yup.object().shape({
         .max(255,"کلمه عبور نباید بیشتر از 255 کاراکتر باشد"),
     confirmPassword: Yup.string()
         .required(" تکرار کلمه عبور الزامی میباشد")
-        .oneOf([Yup.ref("password"),null])
+        .oneOf([Yup.ref("password"),null]," کلمه های عبور یکسان نیستند ")
 });
